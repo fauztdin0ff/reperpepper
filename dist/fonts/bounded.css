@@ -1,0 +1,19 @@
+@font-face {
+	font-family: 'Bounded';
+	font-weight: normal;
+	font-style: normal;
+	src: url('Bounded/Bounded-Regular.otf');
+}
+@font-face {
+	font-family: 'Bounded';
+	font-weight: 500;
+	font-style: normal;
+	src: url('Bounded/Bounded-Medium.otf');
+}
+
+@font-face {
+	font-family: 'Bounded';
+	font-weight: 600;
+	font-style: normal;
+	src: url('Bounded/Bounded-SemiBold.otf');
+}

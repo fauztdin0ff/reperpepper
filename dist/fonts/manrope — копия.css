@@ -1,0 +1,54 @@
+@font-face {
+	font-family: 'Manrope Regular';
+	src: url('../fonts/manrope_regular.eot'); /* IE 9 Compatibility Mode */
+	src: url('../fonts/manrope_regular.eot?#iefix') format('embedded-opentype'), /* IE < 9 */
+		url('../fonts/manrope_regular.woff2') format('woff2'), /* Super Modern Browsers */
+		url('../fonts/manrope_regular.woff') format('woff'), /* Firefox >= 3.6, any other modern browser */
+		url('../fonts/manrope_regular.ttf') format('truetype'), /* Safari, Android, iOS */
+		url('../fonts/manrope_regular.svg#manrope_regular') format('svg'); /* Chrome < 4, Legacy iOS */
+}
+
+@font-face {
+	font-family: 'Manrope Bold';
+	src: url('../fonts/manrope_bold.eot'); /* IE 9 Compatibility Mode */
+	src: url('../fonts/manrope_bold.eot?#iefix') format('embedded-opentype'), /* IE < 9 */
+		url('../fonts/manrope_bold.woff2') format('woff2'), /* Super Modern Browsers */
+		url('../fonts/manrope_bold.woff') format('woff'), /* Firefox >= 3.6, any other modern browser */
+		url('../fonts/manrope_bold.ttf') format('truetype'), /* Safari, Android, iOS */
+		url('../fonts/manrope_bold.svg#manrope_bold') format('svg'); /* Chrome < 4, Legacy iOS */
+}
+
+@font-face {
+	font-family: 'Manrope Light';
+	src: url('../fonts/manrope_light.eot'); /* IE 9 Compatibility Mode */
+	src: url('../fonts/manrope_light.eot?#iefix') format('embedded-opentype'), /* IE < 9 */
+		url('../fonts/manrope_light.woff2') format('woff2'), /* Super Modern Browsers */
+		url('../fonts/manrope_light.woff') format('woff'), /* Firefox >= 3.6, any other modern browser */
+		url('../fonts/manrope_light.ttf') format('truetype'), /* Safari, Android, iOS */
+		url('../fonts/manrope_light.svg#manrope_light') format('svg'); /* Chrome < 4, Legacy iOS */
+}
+
+
+
+
+
+@font-face {
+	font-family: 'Manrope Semibold';
+	src: url('../fonts/manrope_semibold.eot'); /* IE 9 Compatibility Mode */
+	src: url('../fonts/manrope_semibold.eot?#iefix') format('embedded-opentype'), /* IE < 9 */
+		url('../fonts/manrope_semibold.woff2') format('woff2'), /* Super Modern Browsers */
+		url('../fonts/manrope_semibold.woff') format('woff'), /* Firefox >= 3.6, any other modern browser */
+		url('../fonts/manrope_semibold.ttf') format('truetype'), /* Safari, Android, iOS */
+		url('../fonts/manrope_semibold.svg#manrope_semibold') format('svg'); /* Chrome < 4, Legacy iOS */
+}
+
+@font-face {
+	font-family: 'Manrope Thin';
+	src: url('../fonts/manrope_thin.eot'); /* IE 9 Compatibility Mode */
+	src: url('../fonts/manrope_thin.eot?#iefix') format('embedded-opentype'), /* IE < 9 */
+		url('../fonts/manrope_thin.woff2') format('woff2'), /* Super Modern Browsers */
+		url('../fonts/manrope_thin.woff') format('woff'), /* Firefox >= 3.6, any other modern browser */
+		url('../fonts/manrope_thin.ttf') format('truetype'), /* Safari, Android, iOS */
+		url('../fonts/manrope_thin.svg#manrope_thin') format('svg'); /* Chrome < 4, Legacy iOS */
+}
+

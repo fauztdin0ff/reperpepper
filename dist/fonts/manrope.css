@@ -1,0 +1,21 @@
+@font-face {
+	font-family: 'Manrope';
+	font-weight: normal;
+	src: url('Manrope/manrope_regular.eot'); /* IE 9 Compatibility Mode */
+	src: url('Manrope/manrope_regular.eot?#iefix') format('embedded-opentype'), /* IE < 9 */
+		url('Manrope/manrope_regular.woff2') format('woff2'), /* Super Modern Browsers */
+		url('Manrope/manrope_regular.woff') format('woff'), /* Firefox >= 3.6, any other modern browser */
+		url('Manrope/manrope_regular.ttf') format('truetype'), /* Safari, Android, iOS */
+		url('Manrope/manrope_regular.svg#manrope_regular') format('svg'); /* Chrome < 4, Legacy iOS */
+}
+
+@font-face {
+	font-family: 'Manrope';
+	font-weight: 500;
+	src: url('Manrope/manrope_medium.eot'); /* IE 9 Compatibility Mode */
+	src: url('Manrope/manrope_medium.eot?#iefix') format('embedded-opentype'), /* IE < 9 */
+		url('Manrope/manrope_medium.woff2') format('woff2'), /* Super Modern Browsers */
+		url('Manrope/manrope_medium.woff') format('woff'), /* Firefox >= 3.6, any other modern browser */
+		url('Manrope/manrope_medium.ttf') format('truetype'), /* Safari, Android, iOS */
+		url('Manrope/manrope_medium.svg#manrope_medium') format('svg'); /* Chrome < 4, Legacy iOS */
+}
