@@ -250,6 +250,7 @@ var intro_block = $('#intro');
 var color_block = $('#cases');
 var mask_block = $('#intro .videoContainer em');
 var who_block = $('.who');
+var about_block = $('.about');
 var services_block = $('#services');
 var discuss_block = $('#discuss');
 var face_block = $('.face-container');
@@ -292,8 +293,14 @@ function scrollReaction() {
    }
 
    if (who_block.length) {
-      var who_bg = Math.round(0 + (247 * who_koef));
+      var who_bg = Math.round(247 * who_koef);
+
       who_block.css(
+         'background-color',
+         `rgb(${who_bg},${who_bg},${who_bg})`
+      );
+
+      about_block.css(
          'background-color',
          `rgb(${who_bg},${who_bg},${who_bg})`
       );
@@ -331,17 +338,12 @@ function scrollReaction() {
             'background-color': `rgb(${discuss_bg},${discuss_bg},${discuss_bg})`,
             'color': `rgb(${discuss_color},${discuss_color},${discuss_color})`
          };
-
-         if (face_block.length) {
-            var face_start = end;
-            var face_end = end + window.innerHeight * 0.3;
-            var face_koef = (scrY - face_start) / (face_end - face_start);
-            face_koef = Math.max(0, Math.min(1, face_koef));
-            face_block.css('opacity', face_koef);
-         }
-
          services_block.css(discuss_theme);
          discuss_block.css(discuss_theme);
+      }
+
+      if (face_block.length) {
+         face_block.css('opacity', discuss_koef >= 1 ? 1 : 0);
       }
    }
 }

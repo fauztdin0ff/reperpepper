@@ -1122,6 +1122,9 @@ main {
 
 body .face-container {
   margin-top: 1rem;
+  z-index: -1;
+  opacity: 0;
+  transition: all 0.3s ease;
 }
 
 .two_cols {
@@ -2312,12 +2315,14 @@ nowrap {
   padding-inline: clamp(16px, calc(1.2307692308px + 4.1025641026vw), 80px);
   border-top: 1px solid #262626;
   border-bottom: 1px solid #262626;
-  transition: all 0.3s ease-in-out;
 }
 .services__item:first-child {
   border-top: none;
 }
 @media (hover: hover) {
+  .services__item:first-child:hover {
+    transition: all 0.3s ease-in-out;
+  }
   .services__item:first-child:hover .services__item-image {
     transform: scale(1) rotate(-10deg) translateY(-50%);
     opacity: 1;
@@ -2371,6 +2376,10 @@ nowrap {
 .services__item.active {
   background: #f5f7f9;
   color: #161616;
+  transition: all 0.3s ease-in-out;
+}
+.services__item.active .services__item-title {
+  transition: all 0.3s ease-in-out;
 }
 .services__item.active .services__item-image {
   transform: scale(1) translateY(-50%);
@@ -2438,7 +2447,6 @@ nowrap {
 }
 .services__item-title {
   margin-bottom: 0;
-  transition: all 0.3s ease-in-out;
   text-box: trim-both cap alphabetic;
 }
 @media (width < 767px) {
@@ -2482,6 +2490,7 @@ nowrap {
 }
 @media (width < 767px) {
   .services__item-text-wrapper {
+    color: #161616;
     margin-top: 14px;
     transition: all 0.3s ease-in-out;
   }
