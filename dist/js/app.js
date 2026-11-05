@@ -138,7 +138,7 @@ function initAnimations() {
       });
    }, {
       threshold: 0,
-      rootMargin: '0px 0px -20% 0px'
+      rootMargin: '0px 0px -30% 0px'
    });
 
    elements.forEach(element => observer.observe(element));

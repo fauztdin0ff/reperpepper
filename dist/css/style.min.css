@@ -77,6 +77,7 @@ html {
   font-family: "Manrope";
   font-size: 16px;
   line-height: 130%;
+  scroll-padding-top: 100px;
 }
 
 body {
@@ -217,9 +218,9 @@ section {
 
 .fade-in-up {
   opacity: 0;
-  -webkit-transform: translate3d(0, 14px, 0);
-  transform: translate3d(0, 14px, 0);
-  transition: opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1), transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+  -webkit-transform: translateY(20px);
+  transform: translateY(20px);
+  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
 }
 
 .fade-in-up.is-visible {
@@ -903,6 +904,7 @@ main {
 #about {
   position: relative;
   padding-bottom: 0;
+  padding-top: 0;
 }
 
 #about .wrapper {
@@ -1055,6 +1057,7 @@ main {
   isolation: isolate;
   transition: none;
   will-change: transform;
+  text-decoration: none;
 }
 @media (hover: hover) {
   .team-button:hover {
@@ -1955,9 +1958,6 @@ nowrap {
   .menu_show {
     height: 2.5rem;
   }
-  #about .about-subtitle {
-    flex-direction: column;
-  }
   .two_cols {
     flex-direction: column;
   }
@@ -1975,6 +1975,12 @@ nowrap {
 }
 @media (max-width: 760px) {
   .top-panel .wrapper > div:last-child a.tel {
+    display: none;
+  }
+  #about .about-subtitle {
+    flex-direction: column;
+  }
+  #about .about-subtitle div:first-child {
     display: none;
   }
   #intro aside br {
