@@ -124,21 +124,27 @@ $(document).ready(function () {
 });
 
 
+function initAnimations() {
+   const elements = document.querySelectorAll('.fade-in-up');
 
-document.querySelectorAll('.to-animate').forEach(el => {
-   let observer = new IntersectionObserver(entries => {
+   if (!elements.length) return;
+
+   const observer = new IntersectionObserver((entries, observer) => {
       entries.forEach(entry => {
-         if (entry.isIntersecting) {
-            // Проверяем, задан ли класс анимации
-            if (el.dataset.animation) {
-               entry.target.classList.add('animate__animated', el.dataset.animation);
-            }
-         }
+         if (!entry.isIntersecting) return;
+
+         entry.target.classList.add('is-visible');
+         observer.unobserve(entry.target);
       });
+   }, {
+      threshold: 0,
+      rootMargin: '0px 0px -20% 0px'
    });
 
-   observer.observe(el);
-});
+   elements.forEach(element => observer.observe(element));
+}
+
+initAnimations();
 
 
 
@@ -176,38 +182,43 @@ function initHeaderLogoVisible() {
 Header catalog
 ============================================================================*/
 function initCatalogToggle() {
-   const button = document.querySelector('header .header__toggle');
+   const buttons = document.querySelectorAll('header .header__toggle');
    const catalog = document.querySelector('nav');
 
-   if (!button || !catalog) return;
+   if (!buttons.length || !catalog) return;
 
    const ACTIVE_CLASS = 'active';
 
    const openCatalog = () => {
-      button.classList.add(ACTIVE_CLASS);
+      buttons.forEach(button => {
+         button.classList.add(ACTIVE_CLASS);
+      });
+
       catalog.classList.add(ACTIVE_CLASS);
       lenis.stop();
    };
 
    const closeCatalog = () => {
-      button.classList.remove(ACTIVE_CLASS);
+      buttons.forEach(button => {
+         button.classList.remove(ACTIVE_CLASS);
+      });
+
       catalog.classList.remove(ACTIVE_CLASS);
       lenis.start();
    };
 
    const toggleCatalog = () => {
       const isOpen = catalog.classList.contains(ACTIVE_CLASS);
+
       isOpen ? closeCatalog() : openCatalog();
    };
 
-   button.addEventListener('click', (e) => {
-      e.stopPropagation();
-      toggleCatalog();
+   buttons.forEach(button => {
+      button.addEventListener('click', (e) => {
+         e.stopPropagation();
+         toggleCatalog();
+      });
    });
-
-   /*catalog.addEventListener('click', (e) => {
-      e.stopPropagation();
-   });*/
 
    document.addEventListener('click', () => {
       if (catalog.classList.contains(ACTIVE_CLASS)) {
@@ -215,7 +226,6 @@ function initCatalogToggle() {
       }
    });
 }
-
 
 /*==========================================================================
 hover arrow
@@ -1740,5 +1750,20 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
+document.addEventListener('DOMContentLoaded', () => {
+   const container = document.querySelector('.videoContainer');
+   const video = container.querySelector('video');
+
+   const playVideo = async () => {
+      try {
+         await video.play();
+         container.classList.add('video-is-playing');
+      } catch (error) {
+         console.log('Autoplay заблокирован — показываем poster');
+      }
+   };
+
+   playVideo();
+});
 /******/ })()
 ;
