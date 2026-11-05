@@ -142,10 +142,18 @@ function initAnimations() {
    });
 
    elements.forEach(element => observer.observe(element));
+
+   if (window.innerWidth <= 767) {
+      const footerLogo = document.querySelector('.footer-logo .fade-in-up');
+
+      if (footerLogo) {
+         footerLogo.classList.add('is-visible');
+         observer.unobserve(footerLogo);
+      }
+   }
 }
 
 initAnimations();
-
 
 
 let hover = document.getElementsByClassName('hover-letter');
@@ -1759,7 +1767,6 @@ document.addEventListener('DOMContentLoaded', () => {
          await video.play();
          container.classList.add('video-is-playing');
       } catch (error) {
-         console.log('Autoplay заблокирован — показываем poster');
       }
    };
 
