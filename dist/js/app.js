@@ -144,12 +144,14 @@ function initAnimations() {
    elements.forEach(element => observer.observe(element));
 
    if (window.innerWidth <= 767) {
-      const footerLogo = document.querySelector('.footer-logo .fade-in-up');
+      const footerElements = document.querySelectorAll(
+         '.footer aside.fade-in-up, .footer-logo .fade-in-up'
+      );
 
-      if (footerLogo) {
-         footerLogo.classList.add('is-visible');
-         observer.unobserve(footerLogo);
-      }
+      footerElements.forEach(element => {
+         element.classList.add('is-visible');
+         observer.unobserve(element);
+      });
    }
 }
 

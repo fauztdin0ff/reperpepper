@@ -461,7 +461,7 @@ section {
   }
 }
 .logo {
-  height: clamp(26px, 24.1538461538px + 0.5128205128vw, 34px);
+  height: clamp(26px, calc(24.1538461538px + 0.5128205128vw), 34px);
   display: block;
   display: flex;
   margin-top: clamp(14px, 13.5384615385px + 0.1282051282vw, 16px);
@@ -477,15 +477,13 @@ section {
 }
 
 .logo img {
-  width: 100%;
   height: 100%;
-  object-fit: contain;
   mix-blend-mode: color-dodge;
   max-width: initial !important;
 }
 
 .logo span:first-child {
-  max-width: clamp(40px, 34.2307692308px + 1.6025641026vw, 65px);
+  max-width: clamp(50px, calc(45.3846153846px + 1.2820512821vw), 70px);
   transition: 400ms linear 600ms;
 }
 
@@ -921,6 +919,20 @@ main {
   display: flex;
   margin-bottom: clamp(60px, calc(55.3846153846px + 1.2820512821vw), 80px);
 }
+@media (width < 1200px) {
+  #about .about-subtitle div:first-child {
+    display: none;
+  }
+  #about .about-subtitle div:last-child {
+    width: 66.6%;
+    margin-left: auto;
+  }
+}
+@media (width < 767px) {
+  #about .about-subtitle div:last-child {
+    width: 100%;
+  }
+}
 
 #about .about-subtitle > div {
   width: 50%;
@@ -1030,10 +1042,16 @@ main {
   width: calc(249 * var(--u));
   height: calc(249 * var(--u));
 }
+@media (width < 1200px) {
+  .magnet-anchor {
+    width: 80%;
+    height: unset;
+    aspect-ratio: 1;
+  }
+}
 @media (width < 550px) {
   .magnet-anchor {
     width: 220px;
-    height: 220px;
   }
 }
 
@@ -2166,17 +2184,13 @@ nowrap {
 .vector-scene {
   position: relative;
   isolation: isolate;
+  z-index: 3;
+  aspect-ratio: 1360/768;
   /* contain: layout paint; */
-  height: 100svh;
 }
-@media (width < 999px) {
+@media (width < 550px) {
   .vector-scene {
-    height: 80svh;
-  }
-}
-@media (width < 767px) {
-  .vector-scene {
-    height: 40svh;
+    aspect-ratio: 5/4;
   }
 }
 
@@ -2231,10 +2245,14 @@ nowrap {
   margin-bottom: 50px;
 }
 .reviews__slider {
-  max-width: clamp(600px, calc(435.6923076923px + 45.641025641vw), 1312px);
   margin-left: auto;
   width: 100%;
   margin-right: 0 !important;
+}
+@media (width > 1200px) {
+  .reviews__slider {
+    max-width: calc(75% - clamp(40px, 30.7692307692px + 2.5641025641vw, 80px) / 2);
+  }
 }
 .reviews__slide-title {
   font-family: "Bounded";
