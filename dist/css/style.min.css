@@ -531,7 +531,6 @@ nav ul {
   display: flex;
   flex-direction: column;
   gap: clamp(30px, calc(27.6923076923px + 0.641025641vw), 40px);
-  width: 14rem;
   margin-bottom: 0;
 }
 
@@ -540,7 +539,7 @@ nav li {
   list-style: none;
   display: flex;
   justify-content: space-between;
-  gap: 20px;
+  gap: clamp(20px, calc(16.5384615385px + 0.9615384615vw), 35px);
 }
 @media (hover: hover) {
   nav li:has(a:hover)::after {
@@ -556,6 +555,7 @@ nav a {
   text-decoration: none;
   color: white;
   text-box: trim-both cap alphabetic;
+  font-family: "Bounded";
 }
 
 nav li::after {
@@ -593,10 +593,10 @@ nav li a::after {
   display: block;
   position: absolute;
   left: 0;
-  bottom: -0.4rem;
+  bottom: -8px;
   width: 0%;
   height: 2px;
-  background: var(--SuperGreen);
+  background: #fff;
 }
 
 @media (hover: hover) {
@@ -608,12 +608,12 @@ nav li a::after {
 nav aside {
   display: flex;
   flex-direction: column;
-  gap: 30px;
-  width: 25rem;
+  width: clamp(320px, calc(280.7692307692px + 10.8974358974vw), 490px);
+  gap: clamp(30px, calc(25.3846153846px + 1.2820512821vw), 50px);
 }
 
 nav aside a {
-  font-size: clamp(16px, calc(15.0769230769px + 0.2564102564vw), 20px);
+  font-size: clamp(20px, calc(18.6153846154px + 0.3846153846vw), 26px);
   color: #2c48ff;
 }
 
@@ -2030,23 +2030,23 @@ nowrap {
   form > div {
     flex-direction: column;
   }
-}
-@media (max-width: 499px) {
+  nav aside {
+    position: absolute;
+    bottom: 3rem;
+    left: 1rem;
+  }
   nav {
     height: 100vh;
     top: -100vh;
   }
+}
+@media (max-width: 499px) {
   nav .wrapper {
     flex-direction: column;
     align-items: start;
   }
   nav ul {
     width: 100%;
-  }
-  nav aside {
-    position: absolute;
-    bottom: 3rem;
-    left: 1rem;
   }
   .logo {
     height: 26px;
