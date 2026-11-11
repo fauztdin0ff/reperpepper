@@ -123,6 +123,214 @@ $(document).ready(function () {
 
 });
 
+function preloader() {
+   const panel = document.querySelector("#preloader");
+   if (!panel) return;
+
+   const svg = panel.querySelector(".preloader__curve");
+   const shape = panel.querySelector(".preloader__shape");
+   const solid = panel.querySelector(".preloader__solid");
+
+   const isInnerPage = panel.classList.contains("preloader--inner");
+
+   let frame = null;
+
+   const pageLoaded = new Promise((resolve) => {
+      if (document.readyState === "complete") {
+         resolve();
+      } else {
+         window.addEventListener("load", resolve, {
+            once: true,
+         });
+      }
+   });
+
+   const samples = 256;
+   const table = new Float32Array(samples + 1);
+
+   for (let i = 0; i <= samples; i++) {
+      const x = i / samples;
+      let lo = 0;
+      let hi = 1;
+      let t = 0;
+
+      for (let j = 0; j < 18; j++) {
+         t = (lo + hi) / 2;
+
+         const value =
+            3 * (1 - t) * (1 - t) * t * 0.76 +
+            3 * (1 - t) * t * t * 0.24 +
+            t * t * t;
+
+         if (value < x) {
+            lo = t;
+         } else {
+            hi = t;
+         }
+      }
+
+      table[i] =
+         3 * (1 - t) * t * t +
+         t * t * t;
+   }
+
+   table[0] = 0;
+   table[samples] = 1;
+
+   function ease(x) {
+      x = Math.max(0, Math.min(1, x)) * samples;
+
+      const i = Math.floor(x);
+
+      return i === samples
+         ? 1
+         : table[i] +
+         (table[i + 1] - table[i]) * (x - i);
+   }
+
+   function setup() {
+      const h = window.innerHeight;
+      const w = window.innerWidth;
+      const b = Math.min(300, h * 0.38);
+
+      solid.style.height = `${h - b + 8}px`;
+      svg.style.top = `${h - b}px`;
+      svg.style.height = `${b * 2 + 2}px`;
+
+      svg.setAttribute(
+         "viewBox",
+         `0 0 ${w} ${b * 2 + 2}`
+      );
+
+      return { h, b };
+   }
+
+   function draw(edge, bend, h, b) {
+      const w = window.innerWidth;
+
+      panel.style.transform = `translate3d(
+         0,
+         ${(edge - h).toFixed(2)}px,
+         0
+      )`;
+
+      const prefix = `M0 0 H${w} V${b} Q${w / 2} `;
+      const suffix = ` 0 ${b} Z`;
+
+      shape.setAttribute(
+         "d",
+         `${prefix}${(b + bend).toFixed(2)}${suffix}`
+      );
+   }
+
+   function animate(duration, callback) {
+      return new Promise((resolve) => {
+         const start = performance.now();
+
+         function tick(now) {
+            const progress = Math.min(
+               (now - start) / duration,
+               1
+            );
+
+            callback(ease(progress), progress);
+
+            if (progress < 1) {
+               frame = requestAnimationFrame(tick);
+            } else {
+               resolve();
+            }
+         }
+
+         frame = requestAnimationFrame(tick);
+      });
+   }
+
+   async function init() {
+      const { h, b } = setup();
+
+      panel.classList.add("active");
+
+      if (isInnerPage) {
+         draw(h + 2, 0, h, b);
+      } else {
+         draw(-b - 2, 0, h, b);
+
+         await new Promise((resolve) => {
+            requestAnimationFrame(() => {
+               requestAnimationFrame(resolve);
+            });
+         });
+
+         await new Promise((resolve) => {
+            setTimeout(resolve, 200);
+         });
+
+         await animate(800, (eased, progress) => {
+            draw(
+               -b - 2 + (h + b + 4) * eased,
+               -b * Math.sin(Math.PI * progress),
+               h,
+               b
+            );
+         });
+      }
+
+      await pageLoaded;
+
+      document.body.classList.remove("is-loading");
+
+      await new Promise((resolve) => {
+         setTimeout(resolve, 150);
+      });
+
+      document.dispatchEvent(
+         new CustomEvent("preloaderRevealStart")
+      );
+
+      await animate(900, (eased, progress) => {
+         draw(
+            h + 2 - (h + b + 4) * eased,
+            b * Math.sin(Math.PI * progress),
+            h,
+            b
+         );
+      });
+
+      panel.style.display = "none";
+   }
+
+   init();
+
+   window.addEventListener("resize", () => {
+      cancelAnimationFrame(frame);
+   });
+}
+
+preloader();
+
+
+document.addEventListener(
+   "preloaderRevealStart",
+   () => {
+      const container = document.querySelector(".videoContainer");
+
+      if (!container) return;
+
+      const video = container.querySelector("video");
+
+      if (!video) return;
+
+      video.play()
+         .then(() => {
+            container.classList.add("video-is-playing");
+         })
+         .catch(() => {
+         });
+   },
+   { once: true }
+);
+
 
 function initAnimations() {
    const elements = document.querySelectorAll('.fade-in-up');
@@ -138,10 +346,16 @@ function initAnimations() {
       });
    }, {
       threshold: 0,
-      rootMargin: '0px 0px -30% 0px'
+      rootMargin: '0px 0px -20% 0px'
    });
 
-   elements.forEach(element => observer.observe(element));
+   elements.forEach(element => {
+      if (element.classList.contains('fade-imediate')) {
+         element.classList.add('is-visible');
+      } else {
+         observer.observe(element);
+      }
+   });
 
    if (window.innerWidth <= 767) {
       const footerElements = document.querySelectorAll(
@@ -290,8 +504,8 @@ function scrollReaction() {
 
    if (who_block.length) {
       var who_offset = who_block.offset().top;
-      var start = who_offset - window.innerHeight * 0.7;
-      var end = who_offset - window.innerHeight * 0.3;
+      var start = who_offset - window.innerHeight * 0.55;
+      var end = who_offset - window.innerHeight * 0.45;
       who_koef = Math.max(0, Math.min(1, (scrY - start) / (end - start)));
    }
 
@@ -329,8 +543,8 @@ function scrollReaction() {
    // Третий переход
    if (services_block.length) {
       var services_offset = services_block.offset().top;
-      var start = services_offset - window.innerHeight * 0.6;
-      var end = services_offset - window.innerHeight * 0.3;
+      var start = services_offset - window.innerHeight * 0.55;
+      var end = services_offset - window.innerHeight * 0.45;
       var services_koef = (scrY - start) / (end - start);
       services_koef = Math.max(0, Math.min(1, services_koef));
       var services_bg = Math.round(247 - (247 * services_koef));
@@ -346,8 +560,8 @@ function scrollReaction() {
    // Четвертый переход
    if (discuss_block.length) {
       var discuss_offset = discuss_block.offset().top;
-      var start = discuss_offset - window.innerHeight * 0.9;
-      var end = discuss_offset - window.innerHeight * 0.3;
+      var start = discuss_offset - window.innerHeight * 0.55;
+      var end = discuss_offset - window.innerHeight * 0.45;
       var discuss_koef = (scrY - start) / (end - start);
 
       if (discuss_koef > 0) {
@@ -705,7 +919,7 @@ window.VectorArtwork = (() => {
 
    /**
     * Image trail, по механике codepen.io/bigapplemonkey/pen/oNRodOJ.
-    * Один пул из семи фотографий; движение/затухание выполняет Web Animations API.
+    * Один пул из фотографий; движение/затухание выполняет Web Animations API.
     * Нет собственного бесконечного rAF, измерений картинок или новых узлов на mousemove.
     */
    function createPhotoTrail(scene, config) {
@@ -720,10 +934,11 @@ window.VectorArtwork = (() => {
          };
       }) : [];
       let destroyed = false;
-      let index = 0;
+      let remainingCards = [];
+      let previousCard = null;
       let order = 0;
       let anchored = false;
-      let lastWidth = 0;
+      let lastFactor = 0;
       // Каждое фото независимо получает наклон с вероятностью 40%.
       // Без повторяющихся серий; угол постоянен до исчезновения фотографии.
       function nextAngle() {
@@ -759,13 +974,12 @@ window.VectorArtwork = (() => {
          anchored = false;
          order = 0;
       }
-      function resize(width) {
-         if (width === lastWidth) return;
-         lastWidth = width;
-         // Без обрезки: сохраняем собственные пропорции всех семи вложений.
-         const maxWidth = Math.min(250, Math.max(150, width * 0.175));
+      function resize(sceneScale) {
+         // Общий масштаб сохраняет разницу в размерах исходных кадров.
+         const factor = Math.min(1, sceneScale * 0.7) * 0.9;
+         if (factor === lastFactor) return;
+         lastFactor = factor;
          cards.forEach(card => {
-            const factor = Math.min(maxWidth / card.naturalWidth, 350 / card.naturalHeight);
             card.width = card.naturalWidth * factor;
             card.height = card.naturalHeight * factor;
             card.node.style.width = `${card.width}px`;
@@ -773,14 +987,23 @@ window.VectorArtwork = (() => {
          });
       }
       function spawn(x, y) {
-         // Если картинка ещё декодируется, пропускаем её без задержки остальных эффектов.
-         let card = null;
-         for (let attempt = 0; attempt < cards.length; attempt++) {
-            const candidate = cards[index];
-            index = (index + 1) % cards.length;
-            if (candidate.ready) { card = candidate; break; }
+         // На каждый проход перемешиваем готовые фотографии и выдаём их по одному разу.
+         if (remainingCards.length === 0) {
+            remainingCards = cards.filter(card => card.ready);
+            const last = remainingCards.length - 1;
+            for (let i = last; i > 0; i--) {
+               const j = Math.floor(Math.random() * (i + 1));
+               [remainingCards[i], remainingCards[j]] = [remainingCards[j], remainingCards[i]];
+            }
+            // Следующий проход не начинается с фотографии, которая только что появилась.
+            if (last > 0 && remainingCards[last] === previousCard) {
+               const j = Math.floor(Math.random() * last);
+               [remainingCards[last], remainingCards[j]] = [remainingCards[j], remainingCards[last]];
+            }
          }
+         const card = remainingCards.pop();
          if (!card) return false;
+         previousCard = card;
          release(card);
          const token = card.token;
          const angle = nextAngle();
@@ -1005,7 +1228,7 @@ window.VectorArtwork = (() => {
                bounds = scene.getBoundingClientRect();
                boundsDirty = false;
                scale = Math.min(bounds.width / 1920, bounds.height / 970);
-               trail.resize(bounds.width);
+               trail.resize(scale);
             }
             if (bounds.width && bounds.height) {
                target.x = -clamp((cursor.x - bounds.left) / bounds.width * 2 - 1) * config.amplitudeX;
@@ -1522,9 +1745,8 @@ document.addEventListener('DOMContentLoaded', () => {
       slidesPerView: 1,
       spaceBetween: 24,
       loop: true,
-      speed: 600,
+      speed: 400,
       autoHeight: true,
-      speed: 800,
       effect: 'creative',
       creativeEffect: {
          prev: {
@@ -1617,9 +1839,12 @@ document.addEventListener('DOMContentLoaded', () => {
          if (!slideText || !textWrapper) return;
          const isOpen = slideText.classList.toggle('is-open');
          toggleBtn.classList.toggle('is-active', isOpen);
-         toggleBtn.textContent = isOpen
-            ? 'Свернуть отзыв'
-            : 'Показать весь отзыв';
+         const toggleBtnText = toggleBtn.querySelector('span');
+         if (toggleBtnText) {
+            toggleBtnText.textContent = isOpen
+               ? 'Свернуть отзыв'
+               : 'Показать весь отзыв';
+         }
          slideText.style.maxHeight = isOpen
             ? textWrapper.scrollHeight + 'px'
             : '0px';
@@ -1651,6 +1876,26 @@ document.addEventListener('DOMContentLoaded', () => {
 document.addEventListener('DOMContentLoaded', () => {
    const items = document.querySelectorAll('.services__item');
 
+   if (!items.length) return;
+
+   const closeAllItems = () => {
+      items.forEach(item => {
+         const textBlock = item.querySelector('.services__item-text');
+         const textWrapper = item.querySelector('.services__item-text-wrapper');
+         const firstParagraph = textWrapper ? textWrapper.querySelector('p') : null;
+         const image = item.querySelector('.services__item-image');
+
+         item.classList.remove('active');
+
+         if (window.innerWidth <= 999) {
+            if (firstParagraph) firstParagraph.style.maxHeight = '0px';
+            if (image) image.style.maxHeight = '0px';
+         } else {
+            if (textBlock) textBlock.style.maxHeight = '0px';
+         }
+      });
+   };
+
    items.forEach(item => {
       const textBlock = item.querySelector('.services__item-text');
       const textWrapper = item.querySelector('.services__item-text-wrapper');
@@ -1666,6 +1911,7 @@ document.addEventListener('DOMContentLoaded', () => {
             items.forEach(el => {
                if (el !== item) {
                   el.classList.remove('active');
+
                   const fp = el.querySelector('.services__item-text-wrapper p');
                   const img = el.querySelector('.services__item-image');
 
@@ -1680,14 +1926,17 @@ document.addEventListener('DOMContentLoaded', () => {
          requestAnimationFrame(() => {
             if (isMobile) {
                if (firstParagraph) {
-                  firstParagraph.style.maxHeight = firstParagraph.scrollHeight + 'px';
+                  firstParagraph.style.maxHeight =
+                     firstParagraph.scrollHeight + 'px';
                }
+
                if (image) {
                   image.style.maxHeight = '230px';
                }
             } else {
                if (textBlock) {
-                  textBlock.style.maxHeight = (textWrapper.scrollHeight + 15) + 'px';
+                  textBlock.style.maxHeight =
+                     (textWrapper.scrollHeight + 40) + 'px';
                }
             }
          });
@@ -1695,6 +1944,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const closeItem = () => {
          const isMobile = window.innerWidth <= 999;
+
          item.classList.remove('active');
 
          if (isMobile) {
@@ -1707,12 +1957,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
       item.addEventListener('click', () => {
          if (window.innerWidth <= 999) {
-            const isActive = item.classList.contains('active');
-            if (isActive) {
-               closeItem();
-            } else {
-               openItem();
-            }
+            item.classList.contains('active')
+               ? closeItem()
+               : openItem();
          }
       });
 
@@ -1729,6 +1976,18 @@ document.addEventListener('DOMContentLoaded', () => {
       });
    });
 
+
+   const lastItem = items[items.length - 1];
+
+   window.addEventListener('scroll', () => {
+      const rect = lastItem.getBoundingClientRect();
+
+      if (rect.top <= 0) {
+         closeAllItems();
+      }
+   }, { passive: true });
+
+
    window.addEventListener('resize', () => {
       const isMobile = window.innerWidth <= 999;
 
@@ -1737,42 +1996,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
          const textBlock = item.querySelector('.services__item-text');
          const textWrapper = item.querySelector('.services__item-text-wrapper');
-         const firstParagraph = textWrapper ? textWrapper.querySelector('p') : null;
+         const firstParagraph = textWrapper
+            ? textWrapper.querySelector('p')
+            : null;
          const image = item.querySelector('.services__item-image');
 
          if (isMobile) {
             if (textBlock) textBlock.style.maxHeight = 'unset';
+
             if (firstParagraph) {
-               firstParagraph.style.maxHeight = firstParagraph.scrollHeight + 'px';
+               firstParagraph.style.maxHeight =
+                  firstParagraph.scrollHeight + 'px';
             }
+
             if (image) {
                image.style.maxHeight = '230px';
             }
          } else {
             if (firstParagraph) firstParagraph.style.maxHeight = 'unset';
             if (image) image.style.maxHeight = 'unset';
+
             if (textBlock && textWrapper) {
-               textBlock.style.maxHeight = (textWrapper.scrollHeight + 15) + 'px';
+               textBlock.style.maxHeight =
+                  (textWrapper.scrollHeight + 15) + 'px';
             }
          }
       });
    });
 });
 
-
-document.addEventListener('DOMContentLoaded', () => {
-   const container = document.querySelector('.videoContainer');
-   const video = container.querySelector('video');
-
-   const playVideo = async () => {
-      try {
-         await video.play();
-         container.classList.add('video-is-playing');
-      } catch (error) {
-      }
-   };
-
-   playVideo();
-});
 /******/ })()
 ;

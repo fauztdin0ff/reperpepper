@@ -1,3 +1,4 @@
+@charset "UTF-8";
 /*==========================================================================
 Start styles
 ============================================================================*/
@@ -220,7 +221,7 @@ section {
   opacity: 0;
   -webkit-transform: translateY(20px);
   transform: translateY(20px);
-  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+  transition: opacity 0.35s ease-out, transform 0.35s ease-out;
 }
 
 .fade-in-up.is-visible {
@@ -233,56 +234,42 @@ section {
   padding-inline: clamp(16px, calc(1.2307692308px + 4.1025641026vw), 80px);
 }
 
-#preloader {
-  height: 100vh;
-  width: 100%;
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 999;
-  background: #f5f7f9;
-  color: var(--TextBlack);
+.main-wrapper {
+  opacity: 1;
+  transition: opacity 0.4s ease;
 }
 
-#preloader .wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: clamp(20px, calc(17.6923076923px + 0.641025641vw), 30px);
-  justify-content: end;
-  height: 100%;
-  padding-bottom: 50px;
-}
-
-#preloader .wrapper > div {
-  text-align: right;
-  font-size: clamp(36px, calc(32.7692307692px + 0.8974358974vw), 50px);
-  font-weight: 600;
-  width: 100%;
-}
-
-.timeBar span {
-  display: block;
-  height: 3px;
-  background: var(--TextBlack);
-  width: 0%;
-}
-
-.pace {
-  display: none !important;
-}
-
-#preloader > img {
-  display: block;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translateX(-50%) translateY(-50%);
-  transition: opacity 300ms;
+body.is-loading .main-wrapper {
   opacity: 0;
 }
 
-#preloader > img:nth-child(1) {
-  opacity: 1;
+.preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  transform: translate3d(0, -200%, 0);
+}
+
+.preloader.active {
+  visibility: visible;
+  will-change: transform;
+}
+
+.preloader__solid {
+  position: absolute;
+  top: -4px;
+  left: 0;
+  width: 100%;
+  background: #000;
+}
+
+.preloader__curve {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  overflow: visible;
+  display: block;
 }
 
 .top-panel {
@@ -543,7 +530,7 @@ nav li {
 }
 @media (hover: hover) {
   nav li:has(a:hover)::after {
-    transform: scale(1.2);
+    transform: scale(1.4);
   }
 }
 
@@ -568,7 +555,7 @@ nav li::after {
   background-repeat: no-repeat;
   background-size: contain;
   z-index: 2;
-  transition: all 0.4s ease-in-out;
+  transition: all 340ms cubic-bezier(0.4, 0, 0.2, 1);
   will-change: transform;
 }
 
@@ -602,7 +589,7 @@ nav li a::after {
 @media (hover: hover) {
   nav li a:hover::after {
     width: 100%;
-    transition: 600ms;
+    transition: all 340ms cubic-bezier(0.4, 0, 0.2, 1);
   }
 }
 nav aside {
@@ -615,6 +602,14 @@ nav aside {
 nav aside a {
   font-size: clamp(20px, calc(18.6153846154px + 0.3846153846vw), 26px);
   color: #2c48ff;
+}
+
+.ma:not(:last-child) {
+  margin-bottom: 20px;
+}
+
+nav aside span {
+  font-size: 0.6em;
 }
 
 @media (hover: hover) {
@@ -838,7 +833,8 @@ main {
 .list {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 40px 20px;
+  row-gap: clamp(40px, calc(30.7692307692px + 2.5641025641vw), 80px);
+  column-gap: 20px;
 }
 
 .list img {
@@ -1180,6 +1176,7 @@ main {
 
 .logos picture {
   display: block;
+  margin-bottom: clamp(20px, calc(10.7692307692px + 2.5641025641vw), 60px);
 }
 
 .logos img {
@@ -1384,14 +1381,53 @@ form label {
   font-size: clamp(24px, calc(23.0769230769px + 0.2564102564vw), 28px);
 }
 
+#contacts .links .ma {
+  margin: 0;
+}
+
 #contacts .links a {
   color: #2c48ff;
+  line-height: 120%;
   text-box: trim-both cap alphabetic;
 }
 
 #contacts aside {
   display: flex;
   justify-content: space-between;
+}
+
+.agreement {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+}
+.agreement:active .agreement__box {
+  transform: scale(0.9);
+}
+.agreement:has(input:checked) .agreement__box::after {
+  opacity: 1;
+}
+.agreement input {
+  position: absolute;
+  opacity: 0;
+}
+.agreement__box {
+  display: inline-block;
+  flex: 0 0 16px;
+  width: 16px;
+  height: 16px;
+  border: 1px solid #161616;
+  position: relative;
+}
+.agreement__box::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url(../img/check.svg) 55% 56%/70% 70% no-repeat;
+  z-index: 2;
+  opacity: 0;
 }
 
 .network {
@@ -1407,6 +1443,45 @@ form label {
   border-radius: 50%;
   aspect-ratio: 1/1;
   overflow: hidden;
+}
+
+.network a.disabled {
+  filter: grayscale(0.8);
+  position: relative;
+  overflow: unset;
+}
+.network a.disabled::before {
+  opacity: 0.5;
+}
+.network a.disabled::after {
+  content: "скоро";
+  font-size: 12px;
+  color: #000;
+  background: #fff !important;
+  position: absolute;
+  bottom: calc(100% + 5px);
+  left: 0;
+  top: unset;
+  height: auto;
+  z-index: 5;
+  text-align: center;
+  border-radius: 4px;
+  transform: translateY(5px);
+  opacity: 0;
+}
+@media (hover: hover) {
+  .network a.disabled:hover::before {
+    opacity: 0.5;
+  }
+  .network a.disabled:hover::after {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+@media (width < 767px) {
+  .network a.disabled {
+    pointer-events: none;
+  }
 }
 
 .network a img {
@@ -2017,9 +2092,6 @@ nowrap {
   .list a h3 span::before {
     display: none;
   }
-  .list picture {
-    border-radius: 1.5rem;
-  }
   #discuss .title {
     flex-direction: column;
   }
@@ -2030,21 +2102,22 @@ nowrap {
   form > div {
     flex-direction: column;
   }
-  nav aside {
-    position: absolute;
-    bottom: 3rem;
-    left: 1rem;
-  }
   nav {
     height: 100vh;
     top: -100vh;
   }
-}
-@media (max-width: 499px) {
+  nav .wrapper {
+    gap: 40px;
+    height: 100%;
+    padding-bottom: 40px;
+    overflow-y: auto;
+  }
   nav .wrapper {
     flex-direction: column;
     align-items: start;
   }
+}
+@media (max-width: 499px) {
   nav ul {
     width: 100%;
   }
@@ -2072,6 +2145,11 @@ nowrap {
   aspect-ratio: 1921/130;
   overflow: hidden;
   container-type: inline-size;
+}
+@media (width < 767px) {
+  .projects-more {
+    aspect-ratio: unset;
+  }
 }
 
 .projects-more__vector {
@@ -2126,7 +2204,7 @@ nowrap {
 @media (hover: hover) {
   .projects-more__title:hover {
     background: none;
-    color: #fff;
+    color: inherit;
   }
 }
 @media (width < 767px) {
@@ -2136,7 +2214,7 @@ nowrap {
     left: 0;
     width: max-content;
     margin-inline: auto;
-    font-size: 18px;
+    font-size: 22px;
   }
   .projects-more__title::before, .projects-more__title::after {
     content: "";
@@ -2179,6 +2257,7 @@ nowrap {
 
 .who {
   padding-bottom: 0;
+  padding-top: clamp(20px, calc(1.5384615385px + 5.1282051282vw), 100px);
 }
 
 .vector-scene {
@@ -2211,6 +2290,7 @@ nowrap {
   position: relative;
   z-index: 2;
   pointer-events: none;
+  color: inherit;
 }
 
 .photo-trail {
@@ -2272,6 +2352,10 @@ nowrap {
   overflow: hidden;
   transition: all 0.3s linear;
 }
+.reviews__slide-text.is-open .reviews__slide-text-wrapper {
+  opacity: 1;
+  transform: translateY(0);
+}
 .reviews__slide-text.-active {
   max-height: 392px;
 }
@@ -2286,6 +2370,9 @@ nowrap {
   column-gap: 20px;
   column-fill: balance;
   padding-bottom: clamp(30px, calc(23.0769230769px + 1.9230769231vw), 60px);
+  transform: translateY(20px);
+  opacity: 0;
+  transition: opacity 400ms ease-out, transform 400ms ease-out;
 }
 .reviews__slide-text-wrapper p {
   break-inside: avoid;
@@ -2318,15 +2405,37 @@ nowrap {
   border-bottom: 2px solid transparent;
   transition: inherit;
   color: inherit;
+  position: relative;
+}
+.reviews__slide-button::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 100%;
+  bottom: -2px;
+  height: 2px;
+  background: #000;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 600ms ease;
+  will-change: transform;
+}
+.reviews__slide-button svg {
+  width: 1lh;
+  height: 1lh;
+  transition: all 0.3s ease;
 }
 @media (hover: hover) {
   .reviews__slide-button:hover {
     background: none;
     border-color: transparent;
-    border-bottom-color: #000;
+  }
+  .reviews__slide-button:hover::after {
+    transform: scaleX(1);
+    background: #000 !important;
   }
 }
-.reviews__slide-button.-toggle.is-active::after {
+.reviews__slide-button.is-active svg {
   transform: scaleY(-1);
 }
 .reviews__slide-author {
@@ -2503,6 +2612,9 @@ nowrap {
 }
 .services__item.active .services__item-pretext {
   opacity: 0;
+}
+.services__item.active .services__item-arrow {
+  filter: invert(1);
 }
 @media (width < 999px) {
   .services__item {
