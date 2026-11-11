@@ -868,6 +868,7 @@ main {
 .list a h3 {
   margin-top: clamp(26px, calc(22.7692307692px + 0.8974358974vw), 40px);
   margin-bottom: clamp(18px, calc(15.2307692308px + 0.7692307692vw), 30px);
+  text-box: trim-both cap alphabetic;
 }
 
 .list a h3 span {
@@ -893,6 +894,7 @@ main {
 .list p {
   line-height: 110%;
   margin-bottom: clamp(26px, calc(22.7692307692px + 0.8974358974vw), 40px);
+  text-box: trim-both cap alphabetic;
 }
 
 #about {
@@ -2423,7 +2425,7 @@ nowrap {
 .reviews__slide-button svg {
   width: 1lh;
   height: 1lh;
-  transition: all 0.3s ease;
+  transition: transform 400ms ease-out;
 }
 @media (hover: hover) {
   .reviews__slide-button:hover {
@@ -2436,7 +2438,7 @@ nowrap {
   }
 }
 .reviews__slide-button.is-active svg {
-  transform: scaleY(-1);
+  transform: rotate(180deg);
 }
 .reviews__slide-author {
   margin-top: 140px;
