@@ -864,6 +864,21 @@ main {
   column-gap: 20px;
 }
 
+.list .item {
+  position: relative;
+}
+
+.cooming::after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: clamp(90px, calc(65.5384615385px + 6.7948717949vw), 196px);
+  aspect-ratio: 196/120;
+  background: url(../img/cooming.svg) top right/contain no-repeat;
+}
+
 .list img {
   width: 100%;
   display: block;
