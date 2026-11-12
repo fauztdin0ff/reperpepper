@@ -478,138 +478,59 @@ document.querySelectorAll('#cases a.item').forEach(el => {
 
 
 
+// theme
+document.addEventListener('DOMContentLoaded', () => {
+   const themeSections = document.querySelectorAll('[data-theme]');
+   const body = document.body;
 
-var MAIN = $('main');
-var intro_block = $('#intro');
-var color_block = $('#cases');
-var mask_block = $('#intro .videoContainer em');
-var who_block = $('.who');
-var about_block = $('#about');
-var services_block = $('#services');
-var discuss_block = $('#discuss');
-var face_block = $('.face-container');
+   if (!themeSections.length) return;
 
-function scrollReaction() {
-   let scrY = window.scrollY;
-   if (!intro_block.length) return;
-   var maxxx = intro_block.outerHeight();
-   var offff = maxxx * 0.3;
-   var color_offset = MAIN.offset();
-   var color_diff = scrY - offff - color_offset.top;
-   var koef = color_diff / (0.5 * maxxx - offff);
-   koef = Math.max(0, Math.min(1, koef));
-   var pr5 = Math.round(247 - (247 * koef));
-   var pr6 = Math.round(22 + (233 * koef));
-   var who_koef = 0;
+   let currentTheme = body.classList.contains('dark-theme')
+      ? 'dark'
+      : 'light';
 
-   if (who_block.length) {
-      var who_offset = who_block.offset().top;
-      var start = who_offset - window.innerHeight * 0.55;
-      var end = who_offset - window.innerHeight * 0.45;
-      who_koef = Math.max(0, Math.min(1, (scrY - start) / (end - start)));
-   }
+   const setTheme = (theme) => {
+      if (theme === currentTheme) return;
+      body.classList.remove('light-theme', 'dark-theme');
+      body.classList.add(`${theme}-theme`);
+      currentTheme = theme;
+   };
 
-   var final_bg = Math.round(pr5 + ((247 - pr5) * who_koef));
-   var final_color = Math.round(pr6 + ((22 - pr6) * who_koef));
+   const updateTheme = () => {
+      const viewportCenter = window.innerHeight / 2;
 
-   MAIN.css({
-      'background-color': `rgb(${final_bg},${final_bg},${final_bg})`,
-      'color': `rgb(${final_color},${final_color},${final_color})`
+      let activeSection = null;
+
+      themeSections.forEach(section => {
+         const rect = section.getBoundingClientRect();
+         if (
+            rect.top <= viewportCenter &&
+            rect.bottom >= viewportCenter
+         ) {
+            activeSection = section;
+         }
+      });
+
+      if (!activeSection) return;
+
+      const theme = activeSection.dataset.theme;
+
+      if (theme && theme !== currentTheme) {
+         setTheme(theme);
+      }
+   };
+
+   window.addEventListener('scroll', updateTheme, {
+      passive: true
    });
 
-   if (mask_block.length) {
-      mask_block.css('background-color', `rgb(${final_bg},${final_bg},${final_bg})`);
-      $('#intro aside > div em').css(
-         'background-color',
-         `rgb(${final_color},${final_color},${final_color})`
-      );
-      mask_block.css('display', color_diff >= 0 ? 'block' : 'none');
-   }
-
-   if (who_block.length) {
-      var who_bg = Math.round(247 * who_koef);
-
-      who_block.css(
-         'background-color',
-         `rgb(${who_bg},${who_bg},${who_bg})`
-      );
-
-      about_block.css(
-         'background-color',
-         `rgb(${who_bg},${who_bg},${who_bg})`
-      );
-   }
-
-   // Третий переход
-   if (services_block.length) {
-      var services_offset = services_block.offset().top;
-      var start = services_offset - window.innerHeight * 0.55;
-      var end = services_offset - window.innerHeight * 0.45;
-      var services_koef = (scrY - start) / (end - start);
-      services_koef = Math.max(0, Math.min(1, services_koef));
-      var services_bg = Math.round(247 - (247 * services_koef));
-      var services_color = Math.round(22 + (233 * services_koef));
-      var services_theme = {
-         'background-color': `rgb(${services_bg},${services_bg},${services_bg})`,
-         'color': `rgb(${services_color},${services_color},${services_color})`
-      };
-      $('#reviews').css(services_theme);
-      services_block.css(services_theme);
-   }
-
-   // Четвертый переход
-   if (discuss_block.length) {
-      var discuss_offset = discuss_block.offset().top;
-      var start = discuss_offset - window.innerHeight * 0.55;
-      var end = discuss_offset - window.innerHeight * 0.45;
-      var discuss_koef = (scrY - start) / (end - start);
-
-      if (discuss_koef > 0) {
-         discuss_koef = Math.min(1, discuss_koef);
-         var discuss_bg = Math.round(247 * discuss_koef);
-         var discuss_color = Math.round(255 - (233 * discuss_koef));
-         var discuss_theme = {
-            'background-color': `rgb(${discuss_bg},${discuss_bg},${discuss_bg})`,
-            'color': `rgb(${discuss_color},${discuss_color},${discuss_color})`
-         };
-         services_block.css(discuss_theme);
-         discuss_block.css(discuss_theme);
-      }
-
-      if (face_block.length) {
-         face_block.css('opacity', discuss_koef >= 1 ? 1 : 0);
-      }
-   }
-}
-
-
-
-
-
-
-
-
-function resize() {
-   windowHeight = Math.min(document.documentElement.clientHeight, window.screen.height, window.innerHeight);
-   windowWidth = window.innerWidth;
-
-   //var iw = document.querySelector('#intro .wrapper').clientWidth;
-   //console.log( 'iw ' + iw );
-   //document.querySelector('#intro video').style.width = Math.round( iw * 1920 / 1760 ) + 'px';
-
-   scrollReaction();
-}
-
-
-$(window).on('load, resize', function () {
-   resize();
-});
-$(window).on('scroll', function () {
-   scrollReaction();
+   window.addEventListener('resize', updateTheme);
+   updateTheme();
 });
 
 
-resize();
+
+
 initHeaderLogoVisible();
 initCatalogToggle();
 
