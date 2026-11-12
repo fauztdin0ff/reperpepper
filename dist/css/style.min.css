@@ -82,6 +82,11 @@ html {
   line-height: 130%;
   scroll-padding-top: 100px;
 }
+@media (width < 767px) {
+  html {
+    scroll-padding-top: 80px;
+  }
+}
 
 body {
   min-width: 320px;
@@ -505,16 +510,16 @@ body.is-loading .main-wrapper {
   transition: 600ms linear;
 }
 
-.logo.visible span:first-child {
-  max-width: 0;
-  transition: 400ms linear;
+@media (width > 500px) {
+  .logo.visible span:first-child {
+    max-width: 0;
+    transition: 400ms linear;
+  }
+  .logo.visible span:last-child {
+    max-width: clamp(160px, 145.2307692308px + 4.1025641026vw, 224px);
+    transition: 800ms linear 400ms;
+  }
 }
-
-.logo.visible span:last-child {
-  max-width: clamp(160px, 145.2307692308px + 4.1025641026vw, 224px);
-  transition: 800ms linear 400ms;
-}
-
 nav {
   background: #0e0e0e;
   color: white;
@@ -866,6 +871,12 @@ main {
 
 .list .item {
   position: relative;
+}
+.list .item.cooming {
+  pointer-events: none;
+}
+.list .item.cooming picture {
+  filter: grayscale(0.8);
 }
 
 .cooming::after {
@@ -2576,7 +2587,7 @@ nowrap {
 .services__item {
   display: flex;
   align-items: flex-start;
-  gap: clamp(20px, calc(-10px + 8.3333333333vw), 150px);
+  gap: clamp(20px, calc(13.0769230769px + 1.9230769231vw), 50px);
   position: relative;
   padding-block: clamp(40px, calc(31.9230769231px + 2.2435897436vw), 75px);
   padding-inline: clamp(16px, calc(1.2307692308px + 4.1025641026vw), 80px);
@@ -2698,10 +2709,15 @@ nowrap {
   }
 }
 .services__item-main {
-  flex: 0 0 34%;
+  flex: 0 0 40%;
   display: flex;
   align-items: flex-start;
   gap: clamp(11px, calc(2.4615384615px + 2.3717948718vw), 48px);
+}
+@media (width < 1599px) {
+  .services__item-main {
+    flex: 0 0 45%;
+  }
 }
 @media (width < 999px) {
   .services__item-main {
@@ -2748,6 +2764,16 @@ nowrap {
 }
 .services__item-text-wrapper p:last-child {
   color: #a8aaad;
+  margin-bottom: 0;
+}
+@media (width < 767px) {
+  .services__item-text-wrapper p:last-child {
+    color: #5f5f61;
+  }
+}
+.services__item-text-wrapper p {
+  text-box: trim-both cap alphabetic;
+  margin-bottom: 30px;
 }
 @media (width > 999px) {
   .services__item-text-wrapper p:first-child {
@@ -2757,7 +2783,6 @@ nowrap {
 @media (width < 999px) {
   .services__item-text-wrapper p:first-child {
     max-height: 0;
-    overflow: hidden;
     transition: all 0.3s ease-in-out;
   }
 }
@@ -2822,7 +2847,7 @@ nowrap {
 }
 .services__item-arrow {
   margin-left: auto;
-  max-width: clamp(50px, calc(40.7692307692px + 2.5641025641vw), 90px);
+  max-width: clamp(40px, calc(28.4615384615px + 3.2051282051vw), 90px);
   transition: all 0.3s ease-in-out;
   text-align: right;
 }
