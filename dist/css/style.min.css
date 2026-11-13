@@ -116,7 +116,7 @@ body.light-theme .projects-more__baseline {
 }
 
 body.dark-theme {
-  --bg-color: #161616;
+  --bg-color: #000;
   --text-color: #ffffff;
 }
 body.dark-theme .videoContainer {
@@ -527,8 +527,8 @@ nav {
   font-size: clamp(26px, calc(24.1538461538px + 0.5128205128vw), 34px);
   position: fixed;
   transition: 800ms;
-  top: -29rem;
-  height: 29rem;
+  top: -34rem;
+  height: 34rem;
   left: 0;
   width: 100%;
   z-index: 10;
@@ -539,10 +539,15 @@ nav.active {
 }
 
 nav .wrapper {
-  padding-top: 9rem;
+  padding-top: 12rem;
   display: flex;
   justify-content: space-between;
   align-items: end;
+}
+@media (width < 767px) {
+  nav .wrapper {
+    padding-top: 8rem;
+  }
 }
 
 nav ul {
@@ -875,9 +880,6 @@ main {
 .list .item.cooming {
   pointer-events: none;
 }
-.list .item.cooming picture {
-  filter: grayscale(0.8);
-}
 
 .cooming::after {
   content: "";
@@ -913,9 +915,6 @@ main {
 @media (hover: hover) {
   .list a:hover {
     text-decoration: none;
-  }
-  .list a:hover img {
-    scale: 1.05;
   }
 }
 .list a h3 {
@@ -2381,6 +2380,7 @@ nowrap {
   margin-left: auto;
   width: 100%;
   margin-right: 0 !important;
+  padding-bottom: 20px !important;
 }
 @media (width > 1200px) {
   .reviews__slider {
@@ -2403,7 +2403,7 @@ nowrap {
   font-weight: 400;
   max-height: 0;
   overflow: hidden;
-  transition: all 0.3s linear;
+  transition: all 0.3s linear 0.1s;
 }
 .reviews__slide-text.is-open .reviews__slide-text-wrapper {
   opacity: 1;
@@ -2725,6 +2725,7 @@ nowrap {
   }
 }
 .services__item-num {
+  font-family: "Bounded";
   color: #5f5f61;
   font-size: clamp(14px, calc(12.6153846154px + 0.3846153846vw), 20px);
   margin-top: clamp(4px, calc(3.5384615385px + 0.1282051282vw), 6px);
