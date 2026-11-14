@@ -123,6 +123,10 @@ body.dark-theme .videoContainer {
   opacity: 0;
 }
 
+body.no-scroll {
+  overflow: hidden;
+}
+
 h1 {
   font-family: "Bounded";
   font-weight: 600;
@@ -739,6 +743,9 @@ main {
   opacity: 0;
   pointer-events: none;
 }
+#intro .fade-in-up {
+  transition-duration: 0.1s;
+}
 
 #intro .wrapper {
   height: 100%;
@@ -875,12 +882,49 @@ main {
 }
 
 .list .item {
+  display: block;
   position: relative;
 }
 .list .item.cooming {
   pointer-events: none;
 }
 
+.item__preview {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 870/560;
+}
+
+.item__preview-picture,
+.item__preview-video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+}
+
+.item__preview-picture {
+  z-index: 2;
+}
+
+.item__preview-picture img,
+.item__preview-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.item__preview-video {
+  display: block;
+}
+
+@media (hover: hover) {
+  .item:hover .item__preview-picture {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
 .cooming::after {
   content: "";
   display: block;
@@ -1042,6 +1086,9 @@ main {
   font-size: clamp(18px, calc(17.0769230769px + 0.2564102564vw), 22px);
   margin-bottom: clamp(14px, calc(12.3846153846px + 0.4487179487vw), 21px);
   line-height: 100%;
+}
+.about__card.active img:first-child {
+  opacity: 0;
 }
 .about__card-image {
   aspect-ratio: 425/526;
@@ -2162,6 +2209,7 @@ nowrap {
     gap: 40px;
     height: 100%;
     padding-bottom: 40px;
+    overflow-x: hidden;
     overflow-y: auto;
   }
   nav .wrapper {
@@ -2277,6 +2325,7 @@ nowrap {
     top: calc(50% - 1px);
     left: calc(100% + 14px);
     background: var(--text-color);
+    transition: all 0.3s linear;
   }
   .projects-more__title::before {
     left: unset;
@@ -2304,6 +2353,7 @@ nowrap {
     width: 10px;
     height: 20px;
     background: url(../img/arrow-short.svg) center/contain no-repeat;
+    transition: all 0.3s linear;
   }
 }
 

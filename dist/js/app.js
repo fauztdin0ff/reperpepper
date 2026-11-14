@@ -111,16 +111,21 @@ $(document).ready(function () {
 
 
 
-   var cookiePermit = Cookies.get('cookiePermit');
-   if (!cookiePermit) {
-      console.log('!cookiePermit');
-      $('#cookie').show();
-      $('#cookie button').on('click', function () {
-         Cookies.set('cookiePermit', 1, { expires: 365 });
-         $('#cookie').hide();
-      });
-   }
+});
 
+window.addEventListener('load', () => {
+   setTimeout(() => {
+      var cookiePermit = Cookies.get('cookiePermit');
+
+      if (!cookiePermit) {
+         $('#cookie').show();
+
+         $('#cookie button').on('click', function () {
+            Cookies.set('cookiePermit', 1, { expires: 365 });
+            $('#cookie').hide();
+         });
+      }
+   }, 1200);
 });
 
 function preloader() {
@@ -134,6 +139,12 @@ function preloader() {
    const isInnerPage = panel.classList.contains("preloader--inner");
 
    let frame = null;
+   let currentH = 0;
+   let currentB = 0;
+
+   const duration = 1100;
+   const cover = duration * 650 / 1450;
+   const reveal = duration - cover;
 
    const pageLoaded = new Promise((resolve) => {
       if (document.readyState === "complete") {
@@ -193,6 +204,9 @@ function preloader() {
       const w = window.innerWidth;
       const b = Math.min(300, h * 0.38);
 
+      currentH = h;
+      currentB = b;
+
       solid.style.height = `${h - b + 8}px`;
       svg.style.top = `${h - b}px`;
       svg.style.height = `${b * 2 + 2}px`;
@@ -201,11 +215,11 @@ function preloader() {
          "viewBox",
          `0 0 ${w} ${b * 2 + 2}`
       );
-
-      return { h, b };
    }
 
-   function draw(edge, bend, h, b) {
+   function draw(edge, bend) {
+      const h = currentH;
+      const b = currentB;
       const w = window.innerWidth;
 
       panel.style.transform = `translate3d(
@@ -228,6 +242,8 @@ function preloader() {
          const start = performance.now();
 
          function tick(now) {
+            setup();
+
             const progress = Math.min(
                (now - start) / duration,
                1
@@ -238,6 +254,7 @@ function preloader() {
             if (progress < 1) {
                frame = requestAnimationFrame(tick);
             } else {
+               frame = null;
                resolve();
             }
          }
@@ -247,14 +264,14 @@ function preloader() {
    }
 
    async function init() {
-      const { h, b } = setup();
+      setup();
 
       panel.classList.add("active");
 
       if (isInnerPage) {
-         draw(h + 2, 0, h, b);
+         draw(currentH + 2, 0);
       } else {
-         draw(-b - 2, 0, h, b);
+         draw(-currentB - 2, 0);
 
          await new Promise((resolve) => {
             requestAnimationFrame(() => {
@@ -266,12 +283,13 @@ function preloader() {
             setTimeout(resolve, 200);
          });
 
-         await animate(800, (eased, progress) => {
+         await animate(cover, (eased, progress) => {
+            const h = currentH;
+            const b = currentB;
+
             draw(
                -b - 2 + (h + b + 4) * eased,
-               -b * Math.sin(Math.PI * progress),
-               h,
-               b
+               -b * Math.sin(Math.PI * progress)
             );
          });
       }
@@ -288,23 +306,28 @@ function preloader() {
          new CustomEvent("preloaderRevealStart")
       );
 
-      await animate(900, (eased, progress) => {
+      await animate(reveal, (eased, progress) => {
+         const h = currentH;
+         const b = currentB;
+
          draw(
             h + 2 - (h + b + 4) * eased,
-            b * Math.sin(Math.PI * progress),
-            h,
-            b
+            b * Math.sin(Math.PI * progress)
          );
       });
 
       panel.style.display = "none";
+
+      document.dispatchEvent(
+         new CustomEvent("preloaderRevealEnd")
+      );
    }
 
-   init();
-
    window.addEventListener("resize", () => {
-      cancelAnimationFrame(frame);
+      setup();
    });
+
+   init();
 }
 
 preloader();
@@ -369,8 +392,36 @@ function initAnimations() {
    }
 }
 
-initAnimations();
+const preloaderPanel = document.querySelector('#preloader');
 
+if (preloaderPanel) {
+   document.addEventListener('preloaderRevealEnd', initAnimations, {
+      once: true
+   });
+} else {
+   initAnimations();
+}
+
+
+document.addEventListener('DOMContentLoaded', () => {
+   const cards = document.querySelectorAll('.about__card');
+
+   if (!cards.length) return;
+
+   const isTouch = window.matchMedia('(hover: none) and (pointer: coarse)');
+
+   if (!isTouch.matches) return;
+
+   cards.forEach(card => {
+      card.addEventListener('click', () => {
+         cards.forEach(item => {
+            if (item !== card) item.classList.remove('active');
+         });
+
+         card.classList.toggle('active');
+      });
+   });
+});
 
 let hover = document.getElementsByClassName('hover-letter');
 for (let i = 0; i < hover.length; i++) {
@@ -380,6 +431,28 @@ for (let i = 0; i < hover.length; i++) {
    hover[i].innerHTML = '<div><div>' + spans + '</div>' + '<div>' + spans + '</div></div>';
 }
 
+
+document.addEventListener('DOMContentLoaded', () => {
+   const items = document.querySelectorAll('.item');
+
+   if (!items.length) return;
+
+   items.forEach(item => {
+      const video = item.querySelector('.item__preview-video');
+
+      if (!video) return;
+
+      item.addEventListener('mouseenter', () => {
+         video.currentTime = 0;
+         video.play();
+      });
+
+      item.addEventListener('mouseleave', () => {
+         video.pause();
+         video.currentTime = 0;
+      });
+   });
+});
 
 
 ///////////////  2026  /////////////////////
@@ -412,6 +485,7 @@ function initCatalogToggle() {
    if (!buttons.length || !catalog) return;
 
    const ACTIVE_CLASS = 'active';
+   const NO_SCROLL_CLASS = 'no-scroll';
 
    const openCatalog = () => {
       buttons.forEach(button => {
@@ -419,6 +493,7 @@ function initCatalogToggle() {
       });
 
       catalog.classList.add(ACTIVE_CLASS);
+      document.body.classList.add(NO_SCROLL_CLASS);
       lenis.stop();
    };
 
@@ -428,6 +503,7 @@ function initCatalogToggle() {
       });
 
       catalog.classList.remove(ACTIVE_CLASS);
+      document.body.classList.remove(NO_SCROLL_CLASS);
       lenis.start();
    };
 
@@ -450,7 +526,6 @@ function initCatalogToggle() {
       }
    });
 }
-
 /*==========================================================================
 hover arrow
 ============================================================================*/
