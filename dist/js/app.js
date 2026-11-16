@@ -128,6 +128,7 @@ window.addEventListener('load', () => {
    }, 1200);
 });
 
+
 function preloader() {
    const panel = document.querySelector("#preloader");
    if (!panel) return;
@@ -145,16 +146,6 @@ function preloader() {
    const duration = 1100;
    const cover = duration * 650 / 1450;
    const reveal = duration - cover;
-
-   const pageLoaded = new Promise((resolve) => {
-      if (document.readyState === "complete") {
-         resolve();
-      } else {
-         window.addEventListener("load", resolve, {
-            once: true,
-         });
-      }
-   });
 
    const samples = 256;
    const table = new Float32Array(samples + 1);
@@ -279,10 +270,6 @@ function preloader() {
             });
          });
 
-         await new Promise((resolve) => {
-            setTimeout(resolve, 200);
-         });
-
          await animate(cover, (eased, progress) => {
             const h = currentH;
             const b = currentB;
@@ -293,8 +280,6 @@ function preloader() {
             );
          });
       }
-
-      await pageLoaded;
 
       document.body.classList.remove("is-loading");
 
@@ -323,9 +308,7 @@ function preloader() {
       );
    }
 
-   window.addEventListener("resize", () => {
-      setup();
-   });
+   window.addEventListener("resize", setup);
 
    init();
 }
